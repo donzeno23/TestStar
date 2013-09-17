@@ -87,27 +87,14 @@ class WorkerDeployPackage(BaseTaskHandler):
         if self.backend_configured(deploy_result):
             response.update(state=deploy_result.state)
         logging.info("Deploy Package updated response '%s' " % response) #'{'task-id': 'deploy-package-fa77046d-67bf-4d32-914c-5523983a9641'}'
-        logging.info("Deploy Package state '%s' " % deploy_result.state) 
-        self.write(response)        
-        
-        #if response and 'ok' in response[0][workername]:
-        #    self.write(dict(
-        #        message="Deploying package to '%s' worker" % workername))
-        #else:
-        #    logging.error(response)
-        #    self.set_status(403)
-        #    self.write("Failed to deploy package to the '%s' worker" % workername)
-        ################################
-                
-        '''
-        if response and 'ok' in response[0][workername]:
+        if response:
             self.write(dict(
                 message="Deploying package to '%s' worker" % workername))
         else:
             logging.error(response)
             self.set_status(403)
             self.write("Failed to deploy package to the '%s' worker" % workername)
-        '''
+        
 
 #class WorkerRunPackage(BaseTaskHandler): pass
 class WorkerDeployAndRunPackage(BaseTaskHandler): pass
