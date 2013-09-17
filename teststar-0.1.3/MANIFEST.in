@@ -1,0 +1,4 @@
+include MANIFEST.in
+include README.rst
+recursive-include teststar/static *
+recursive-include teststar/templates *
