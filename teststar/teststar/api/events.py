@@ -3,8 +3,6 @@ from __future__ import absolute_import
 import sys
 
 from ..api import BaseWebSocketHandler
-#NOTE: the below is used when running python teststar ...
-#from api import BaseWebSocketHandler
 
 
 class EventsApiHandler(BaseWebSocketHandler):

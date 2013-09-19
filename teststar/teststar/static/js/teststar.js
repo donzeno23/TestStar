@@ -21,6 +21,18 @@ var teststar = (function () {
         $("#alert").show();
     }
 
+    function get_selected_spec() {
+        return $('#specs-table tr').has('td.is_selected > input:checked');
+    }
+    
+    function get_selected_suite() {
+        return $('#suites-table tr').has('td.is_selected > input:checked');
+    }    
+
+    function get_selected_owner() {
+        return $('#owners-table tr').has('td.is_selected > input:checked');
+    }  
+
     function get_selected_workers() {
         return $('#workers-table tr').has('td.is_selected > input:checked');
     }
@@ -88,17 +100,25 @@ var teststar = (function () {
 
     function deploy_package_selected(event) {
         var $selected_workers = get_selected_workers();
+        var $selected_spec = get_selected_spec();
+        var $selected_suite = get_selected_suite();
+        var $selected_owner = get_selected_owner();        
 
         /* atomic would be better with list of ids (not-names) */
         $selected_workers.each(function () {
             var $worker = $(this),
                 worker_name = $worker.attr('id');
+            var $spec = $selected_spec, spec_name = $spec.attr('id');
+            var $suite = $selected_suite, suite_name = $suite.attr('id');
+            var $owner = $selected_owner, owner_name = $owner.attr('id'); 
+            
+            var obj = { workername: worker_name, specname: spec_name, suitename: suite_name, ownername: owner_name };               
 
             $.ajax({
                 type: 'POST',
-                url: url_prefix() + '/api/worker/deploy/package/' + worker_name,
+                url: url_prefix() + '/api/worker/deploy/package/' + worker_name + '/' + spec_name + '/' + suite_name + '/' + owner_name,
                 dataType: 'json',
-                data: { workername: worker_name },
+                data: JSON.stringify(obj),
                 success: function (data) {
                     show_success_alert(data.message);
                 },

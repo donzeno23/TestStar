@@ -6,9 +6,6 @@ from tornado import web
 
 from ..views import BaseHandler
 from ..models import WorkersModel
-#NOTE: the below is used when running python teststar ...
-#from views import BaseHandler
-#from models import WorkersModel
 
 
 class ControlHandler(BaseHandler):

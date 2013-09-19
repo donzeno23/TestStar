@@ -15,12 +15,8 @@ from tornado import web
 from .. import settings
 from ..utils import template, bugreport
 
-#NOTE: the below is used when running python teststar ...
-#import settings
-#from utils import template, bugreport
 
 
-#class BaseHandler(tornado.web.RequestHandler):
 class BaseHandler(web.RequestHandler):
     
     def prepare(self):

@@ -18,15 +18,8 @@ from celery.events import EventReceiver
 from celery.events.state import State
 
 from . import api
-'''
-#NOTE: the below is used when running python teststar ...
-import api
-from api import events
-'''
 
 from .settings import CELERY_EVENTS_ENABLE_INTERVAL
-#NOTE: the below is used when running python teststar ...
-#from settings import CELERY_EVENTS_ENABLE_INTERVAL
 
 
 class EventsState(State):
@@ -38,8 +31,6 @@ class EventsState(State):
     def event(self, event):
         # Send event to api subscribers (via websockets)
         classname = api.events.getClassName(event['type'])
-        #NOTE: the below is used when python teststar ... is run
-        #classname = events.getClassName(event['type'])
         cls = getattr(api.events, classname, None)
         if cls:
             cls.send_message(event)

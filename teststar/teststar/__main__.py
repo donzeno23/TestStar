@@ -3,9 +3,6 @@ from __future__ import print_function
 
 from teststar.command import TestStarCommand
 from teststar.utils import bugreport
-#NOTE: the below is used when running python teststar ...
-#from command import TestStarCommand
-#from utils import bugreport
 
 
 def main():

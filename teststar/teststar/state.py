@@ -11,12 +11,8 @@ from pprint import pformat
 import celery
 
 from . import settings
-#NOTE: the below is used when running python teststar ...
-#import settings
 
 from .utils.broker import Broker
-#NOTE: the below is used when running python teststar ...
-#from utils.broker import Broker
 
 
 class State(threading.Thread):

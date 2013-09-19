@@ -2,8 +2,6 @@ from __future__ import absolute_import
 
 from tornado.web import StaticFileHandler
 
-#NOTE: the below is used when running python teststar ...
-#from views.workers import (
 from .views.workers import (
     WorkersView,
     WorkerView,

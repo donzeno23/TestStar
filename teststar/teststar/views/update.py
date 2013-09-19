@@ -10,9 +10,6 @@ from tornado.ioloop import PeriodicCallback
 
 from ..models import WorkersModel
 from ..settings import PAGE_UPDATE_INTERVAL
-#NOTE: the below is used when running python teststar ...
-#from models import WorkersModel
-#from settings import PAGE_UPDATE_INTERVAL
 
 
 class UpdateWorkers(websocket.WebSocketHandler):

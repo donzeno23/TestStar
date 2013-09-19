@@ -6,8 +6,6 @@ from tornado import web
 from celery import states
 
 from ..views import BaseHandler
-#NOTE: the below is used when running python teststar ...
-#from views import BaseHandler
 
 
 class Monitor(BaseHandler):

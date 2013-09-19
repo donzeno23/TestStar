@@ -7,6 +7,66 @@
 {% block container %}
   <div class="container-fluid">
     <div class="page-header">
+      <h1>ATS scheduler</h1>
+    </div>
+
+    <table id="specs-table" class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th style="width: 15px; min-width: 15px;"></th>
+        <th>Spec Name</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for name,info in specs.iteritems() %}
+      <tr id="{{ url_escape(name) }}">
+        <td class="is_selected"><input type="radio" name="specname" value={{name}}}></td>
+        <!--<td><a href="{{ absolute_url('spec/' + name) }}">{{name}}</a></td>-->
+        <td><a href="http://jira.liquidnet.com/browse/ATSBE?selectedTab=com.atlassian.jira.plugin.system.project%3Aversions-panel">{{name}}</a></td>
+      </tr>
+      {% end %}
+      </tbody>
+    </table>
+
+    <table id="suites-table" class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th style="width: 15px; min-width: 15px;"></th>
+        <th>Suite Name</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for name in suites %}
+      <tr id="{{ url_escape(name) }}">
+        <td class="is_selected"><input type="radio" name="suitename" value={{name}}}></td>
+        <td><a href="{{ absolute_url('suite/' + name) }}">{{name}}</a></td>
+      </tr>
+      {% end %}
+      </tbody>
+    </table>
+
+    <table id="owners-table" class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th style="width: 15px; min-width: 15px;"></th>
+        <th>Owner Name</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for name in owners %}
+      <tr id="{{ url_escape(name) }}">
+        <td class="is_selected"><input type="radio" name="ownername" value={{name}}}></td>
+        <td><a href="{{ absolute_url('owner/' + name) }}">{{name}}</a></td>
+      </tr>
+      {% end %}
+      </tbody>
+    </table>
+
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="page-header">
       <h1>Workers</h1>
     </div>
 

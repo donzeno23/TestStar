@@ -10,9 +10,6 @@ import tornado.auth
 from .. import settings
 from ..views import BaseHandler
 
-#NOTE: the below is used when running python teststar ...
-#import settings
-#from views import BaseHandler
 
 
 class LoginHandler(BaseHandler, tornado.auth.GoogleMixin):

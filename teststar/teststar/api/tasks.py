@@ -13,8 +13,7 @@ from celery.backends.base import DisabledBackend
 from celery.utils import gen_unique_id
 
 from ..models import TaskModel, WorkersModel, Suite, SuiteError, TestRun, TestError
-#NOTE: the below is used when running python teststar ...
-#from models import TaskModel, WorkersModel, Suite, SuiteError, TestRun, TestError
+
 from django.db import connection
 from django.db import transaction
 from django.db.models import Q
@@ -22,12 +21,8 @@ from django.db.models import Max, Min, Count
 
 
 from ..views import BaseHandler
-#NOTE: the below is used when running python teststar ...
-#from views import BaseHandler
 
 from .. import tasks
-#NOTE: the below is used when running python teststar ...
-#import tasks
 
 class BaseTaskHandler(BaseHandler):
     def get_task_args(self):
@@ -51,42 +46,50 @@ class WorkerDeployPackage(BaseTaskHandler):
     logging.debug("Calling WorkerDeployPackage")
     
     @web.authenticated
-    def post(self, workername):
+    def post(self, obj):
+
+        workername = obj.split('/')[0]
+        specname = obj.split('/')[1]
+        suitename = obj.split('/')[2]
+        ownername = obj.split('/')[3]        
+
         if not self.is_worker(workername):
             raise web.HTTPError(404, "Unknown worker '%s'" % workername)
         celery = self.application.celery_app
         
-        ###############################
-        #TODO: uncomment once json objects added to teststar.js
-        ####args, kwargs, options = self.get_task_args() 
+        args, kwargs, options = self.get_task_args() 
+
+        logging.info("WorkerDeployPackage: args '%s' " % args)
+        logging.info("WorkerDeployPackage: kwargs '%s' " % kwargs)
+        logging.info("WorkerDeployPackage: options '%s' " % options)
+
         taskname = 'deploy-package'
 
-        #TODO: temporarily hard-code args and kwargs
         name = 'deploy package'
-        routing_key = 'trunk'
-        suite = 'dir:core/be'
-        owner = 'mdaloia'
+        routing_key = specname
+        suite = suitename
+        owner = ownername
         args = [name, routing_key, suite, owner]
-        #task_id = "deploy-package-"+gen_unique_id()
         task_id = taskname+"-"+gen_unique_id()
-        kwargs = {u'routing_key_name': u'trunk', u'suite_name': u'dir:core/be', u'job_name': u'run test suite'}
+        kwargs = {u'routing_key_name': routing_key, u'suite_name': suite, u'job_name': name}
         exchange = 'testbench'
         routing_key = 'testbench.'+workername
 
         logging.info("Starting task '%s' with '%s' and '%s' on '%s' worker" % (taskname, args, kwargs, workername))
         
         ##deploy_result = celery.send_task(taskname, args=args, kwargs=kwargs)
-        deploy_result = tasks.deploy_package.apply_async(args=[name, routing_key, suite, owner], 
-                                                         task_id=taskname+"-"+gen_unique_id(),
-                                                         kwargs={u'routing_key_name': u'trunk', u'suite_name': u'dir:core/be', u'job_name': u'run test suite'},
+        deploy_result = tasks.deploy_package.apply_async(args=args,
+                                                         task_id=task_id,
+                                                         kwargs=kwargs,
                                                          exchange='testbench',
                                                          routing_key="testbench."+workername)
         
         response = {'task-id': deploy_result.task_id}
-        logging.info("Deploy Package response '%s' " % response) #'{'task-id': 'deploy-package-fa77046d-67bf-4d32-914c-5523983a9641'}'
+        logging.info("Deploy Package response '%s' " % response)
         if self.backend_configured(deploy_result):
             response.update(state=deploy_result.state)
-        logging.info("Deploy Package updated response '%s' " % response) #'{'task-id': 'deploy-package-fa77046d-67bf-4d32-914c-5523983a9641'}'
+        logging.info("Deploy Package updated response '%s' " % response)
+        #TODO: display message for list of workers selected
         if response:
             self.write(dict(
                 message="Deploying package to '%s' worker" % workername))
@@ -97,7 +100,6 @@ class WorkerDeployPackage(BaseTaskHandler):
         
 
 #class WorkerRunPackage(BaseTaskHandler): pass
-class WorkerDeployAndRunPackage(BaseTaskHandler): pass
 class WorkerDeployAndRunPackage(BaseTaskHandler): pass
 #class WorkerCreateDB(BaseTaskHandler): pass
 class WorkerRunTestSuite(BaseTaskHandler): pass

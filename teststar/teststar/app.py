@@ -4,34 +4,53 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 import tornado.wsgi
-#import daemon
 import os, sys
+
+import ConfigParser
 
 import tornado.web
 from tornado import ioloop
 
 # django settings must be called before importing models
 from django.conf import settings
-settings.configure(DATABASE_ENGINE="django.db.backends.oracle", 
-                   DATABASE_NAME="DEVDB7",
-                   DATABASE_USER="test_repository",
-                   DATABASE_PASSWORD="tr4qa",
-                   DATABASE_HOST="devdb7.liquidnet.com",
-                   DATABASE_PORT="1521")
+
+#Get DB settings
+Config = ConfigParser.ConfigParser()
+
+if platform.system() == 'Windows':
+    Config.read(os.environ['TESTSTAR_HOME']+'\\teststar.ini')
+elif platform.system() == "Linux":
+    Config.read(os.environ['TESTSTAR_HOME']+'/teststar.ini')
+else:
+    logging.info("Platform '%'s is not supported" % platform.system())
+
+dbengine = Config.get('database', 'engine')    
+dbname = Config.get('database', 'name')
+dbuser = Config.get('database', 'user')
+dbpassword = Config.get('database', 'password')
+dbhost = Config.get('database', 'host')
+dbport = Config.get('database', 'port')
+
+settings.configure(DATABASES = {
+    'default': {
+        'ENGINE': dbengine,
+        'NAME': dbname,
+        'USER': dbuser,             # Not used with sqlite3.
+        'PASSWORD': dbpassword,     # Not used with sqlite3.
+        'HOST': dbhost,             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': dbport,             # Set to empty string for default. Not used with sqlite3.            
+    }
+}
+)
 
 from django import forms
 from django.db import models
-
 
 import celery
 
 from teststar.events import Events
 from teststar.state import State
 from teststar.urls import handlers
-#NOTE: the below is used when running python teststar ...
-#from events import Events
-#from state import State
-#from urls import handlers
 
 
 class TestStar(tornado.web.Application):

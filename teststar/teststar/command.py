@@ -11,9 +11,7 @@ from celery.bin.base import Command
 
 from . import settings
 from .app import TestStar
-#NOTE: the below is used when running python teststar ...
-#import settings
-#from app import TestStar
+
 
 '''
 define("port", default=8888, help="run on the given port", type=int)
